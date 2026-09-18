@@ -1,0 +1,27 @@
+{
+  "name": "digital-banking-monolith",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Digital Banking System with NIBSS Integration - Clean Hexagonal Architecture",
+  "scripts": {
+    "dev:backend": "pnpm --filter backend start:dev",
+    "dev:frontend": "pnpm --filter frontend dev",
+    "build": "pnpm build:backend && pnpm build:frontend",
+    "build:backend": "pnpm --filter backend build",
+    "build:frontend": "pnpm --filter frontend build",
+    "test:backend": "pnpm --filter backend test",
+    "test:e2e": "pnpm --filter backend test:e2e",
+    "seed": "pnpm --filter backend seed",
+    "db:push": "pnpm --filter backend db:push"
+  },
+  "keywords": [
+    "banking",
+    "nestjs",
+    "hexagonal-architecture",
+    "drizzle",
+    "sqlite",
+    "nibss"
+  ],
+  "author": "TS Academy Phoenix Cohort",
+  "license": "ISC"
+}

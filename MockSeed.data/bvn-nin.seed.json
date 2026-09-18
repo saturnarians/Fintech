@@ -1,0 +1,45 @@
+{
+  "bvns": [
+    {
+      "bvn": "10840712847",
+      "firstName": "Onyekachi",
+      "lastName": "Obute",
+      "dob": "2005-04-04",
+      "phone": "07869584455"
+    },
+    {
+      "bvn": "10872076701",
+      "firstName": "John",
+      "lastName": "Oloruntobi",
+      "dob": "2002-11-15",
+      "phone": "08012345678"
+    },
+    {
+      "bvn": "22233445566",
+      "firstName": "Chidi",
+      "lastName": "Eze",
+      "dob": "1998-07-22",
+      "phone": "08198765432"
+    }
+  ],
+  "nins": [
+    {
+      "nin": "10840712847",
+      "firstName": "Onyekachi",
+      "lastName": "Obute",
+      "dob": "2005-04-04"
+    },
+    {
+      "nin": "55443322110",
+      "firstName": "Jude",
+      "lastName": "Ani",
+      "dob": "2003-08-20"
+    },
+    {
+      "nin": "98765432101",
+      "firstName": "Amina",
+      "lastName": "Bello",
+      "dob": "2001-03-12"
+    }
+  ]
+}

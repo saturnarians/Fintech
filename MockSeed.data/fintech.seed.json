@@ -1,0 +1,10 @@
+{
+  "fintech": {
+    "name": "Phoenix Bank",
+    "email": "phoenix@tsacademyonline.com",
+    "apiKey": "8afa6eec4f941ee25c7853f451d32f88",
+    "apiSecret": "de6072722c2dde5906f6d2a6c5f45dae2eacbaa90f31d3f37691ea8993443367",
+    "bankCode": "260",
+    "bankName": "PHC Bank"
+  }
+}

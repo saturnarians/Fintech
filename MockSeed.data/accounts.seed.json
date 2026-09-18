@@ -1,0 +1,22 @@
+[
+  {
+    "id": "acc-001",
+    "userId": "usr-customer-001",
+    "accountNumber": "1084071287",
+    "bankCode": "260",
+    "bankName": "PHC Bank",
+    "balance": 15000,
+    "currency": "NGN",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "acc-002",
+    "userId": "usr-customer-002",
+    "accountNumber": "1087207670",
+    "bankCode": "260",
+    "bankName": "PHC Bank",
+    "balance": 15000,
+    "currency": "NGN",
+    "status": "ACTIVE"
+  }
+]

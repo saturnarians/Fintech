@@ -1,0 +1,50 @@
+[
+  {
+    "id": "usr-admin-001",
+    "email": "admin@phcbank.com",
+    "plainPassword": "AdminPassword123!",
+    "role": "ADMIN",
+    "firstName": "System",
+    "lastName": "Administrator",
+    "phone": "08000000001",
+    "kycVerified": true,
+    "bvnOrNin": "10840712847",
+    "kycType": "BVN"
+  },
+  {
+    "id": "usr-customer-001",
+    "email": "onyekachi@example.com",
+    "plainPassword": "CustomerPass123!",
+    "role": "CUSTOMER",
+    "firstName": "Onyekachi",
+    "lastName": "Obute",
+    "phone": "07869584455",
+    "kycVerified": true,
+    "bvnOrNin": "10840712847",
+    "kycType": "BVN"
+  },
+  {
+    "id": "usr-customer-002",
+    "email": "john@example.com",
+    "plainPassword": "CustomerPass123!",
+    "role": "CUSTOMER",
+    "firstName": "John",
+    "lastName": "Oloruntobi",
+    "phone": "08012345678",
+    "kycVerified": true,
+    "bvnOrNin": "10872076701",
+    "kycType": "BVN"
+  },
+  {
+    "id": "usr-customer-003",
+    "email": "jude@example.com",
+    "plainPassword": "CustomerPass123!",
+    "role": "CUSTOMER",
+    "firstName": "Jude",
+    "lastName": "Ani",
+    "phone": "08198765432",
+    "kycVerified": true,
+    "bvnOrNin": "55443322110",
+    "kycType": "NIN"
+  }
+]
