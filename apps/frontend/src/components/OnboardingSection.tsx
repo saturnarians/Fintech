@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { api } from '../lib/api';
+import { createRateLimiter } from '../lib/rateLimiter';
 import { User, Account } from '../types';
 import { ShieldAlert, CheckCircle2, UserCheck, PlusCircle, AlertCircle } from 'lucide-react';
 
@@ -38,11 +39,25 @@ export const OnboardingSection: React.FC<OnboardingSectionProps> = ({
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
 
+  /**
+   * LEARNING NOTE: RATE LIMITER — cap KYC seed submissions to 3 per 60 s.
+   * Prevents accidental or malicious flooding of the NIBSS identity gateway.
+   */
+  const seedLimiter = useRef(createRateLimiter(3, 60_000));
+
   // 1. Seed/Insert BVN or NIN into NIBSS Identity Gateway
   const handleSeedIdentity = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
     setSuccessMsg('');
+
+    // Rate-limit guard — 3 submissions per 60 s
+    if (!seedLimiter.current.isAllowed()) {
+      const waitSec = Math.ceil(seedLimiter.current.msUntilReset() / 1000);
+      setErrorMsg(`Too many attempts. Please wait ${waitSec}s before trying again.`);
+      return;
+    }
+
     setIsSeeding(true);
 
     try {

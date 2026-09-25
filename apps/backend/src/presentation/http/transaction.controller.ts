@@ -1,4 +1,5 @@
 import { Controller, Post, Get, Body, Param, UseGuards } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { TransferUseCase } from '../../application/transaction/use-cases/transfer.use-case';
 import { GetTransactionsUseCase } from '../../application/transaction/use-cases/get-transactions.use-case';
 import { QueryTransactionStatusUseCase } from '../../application/transaction/use-cases/query-status.use-case';
@@ -27,6 +28,12 @@ export class TransactionController {
     private readonly queryStatusUseCase: QueryTransactionStatusUseCase,
   ) {}
 
+  /**
+   * LEARNING NOTE: STRICT THROTTLE ON TRANSFER
+   * Overrides global 60/60s with a tighter 10 transfers per 60 s per IP.
+   * Prevents batch-automation abuse of the settlement API.
+   */
+  @Throttle({ default: { limit: 10, ttl: 60_000 } })
   @Post('transfer')
   async transfer(
     @Body(new ZodValidationPipe(TransferSchema)) dto: TransferDto,

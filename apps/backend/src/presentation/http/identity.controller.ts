@@ -1,4 +1,5 @@
 import { Controller, Post, Body, Req, UseGuards, Optional } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { InsertBvnUseCase } from '../../application/identity/use-cases/insert-bvn.use-case';
 import { InsertNinUseCase } from '../../application/identity/use-cases/insert-nin.use-case';
 import { ValidateBvnUseCase } from '../../application/identity/use-cases/validate-bvn.use-case';
@@ -33,11 +34,17 @@ export class IdentityController {
     private readonly validateNinUseCase: ValidateNinUseCase,
   ) {}
 
+  /**
+   * LEARNING NOTE: STRICT THROTTLE ON IDENTITY SEEDING
+   * insert-bvn/insert-nin hit the NIBSS gateway; cap at 5 per 60 s per IP.
+   */
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
   @Post('insert-bvn')
   async insertBvn(@Body(new ZodValidationPipe(InsertBvnSchema)) dto: InsertBvnDto) {
     return this.insertBvnUseCase.execute(dto);
   }
 
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
   @Post('insert-nin')
   async insertNin(@Body(new ZodValidationPipe(InsertNinSchema)) dto: InsertNinDto) {
     return this.insertNinUseCase.execute(dto);

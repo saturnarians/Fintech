@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { api } from '../lib/api';
+import { useDebounce } from '../lib/debounce';
+import { createRateLimiter } from '../lib/rateLimiter';
 import { NameEnquiryResponse, TransferResponse } from '../types';
-import { X, Send, Search, CheckCircle2, AlertCircle, ArrowRightLeft, ShieldCheck } from 'lucide-react';
+import { X, Search, CheckCircle2, AlertCircle, ArrowRightLeft, ShieldCheck } from 'lucide-react';
 
 interface TransferModalProps {
   isOpen: boolean;
@@ -40,11 +42,41 @@ export const TransferModal: React.FC<TransferModalProps> = ({
   const [errorMsg, setErrorMsg] = useState('');
   const [successResult, setSuccessResult] = useState<TransferResponse | null>(null);
 
+  /**
+   * LEARNING NOTE: DEBOUNCE — auto-trigger name enquiry 600 ms after user
+   * stops typing, only when the account number is exactly 10 digits.
+   */
+  const debouncedAccNo = useDebounce(recipientAccNo, 600);
+
+  /**
+   * LEARNING NOTE: RATE LIMITER — cap Verify button at 5 calls per 10 s
+   * to avoid flooding the name-enquiry endpoint.
+   */
+  const enquiryLimiter = useRef(createRateLimiter(5, 10_000));
+  const [enquiryRemaining, setEnquiryRemaining] = useState(5);
+
+  // Auto-run enquiry when debounced value reaches 10 digits
+  useEffect(() => {
+    if (debouncedAccNo.length === 10) {
+      handleNameEnquiry();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedAccNo]);
+
   if (!isOpen) return null;
 
   // 1. Perform Name Enquiry to verify recipient
   const handleNameEnquiry = async () => {
     if (recipientAccNo.length !== 10) return;
+
+    // Rate-limit guard
+    if (!enquiryLimiter.current.isAllowed()) {
+      const waitSec = Math.ceil(enquiryLimiter.current.msUntilReset() / 1000);
+      setErrorMsg(`Too many lookups. Try again in ${waitSec}s.`);
+      return;
+    }
+    setEnquiryRemaining(enquiryLimiter.current.remaining());
+
     setErrorMsg('');
     setIsPerformingEnquiry(true);
     setEnquiryResult(null);
@@ -189,11 +221,12 @@ export const TransferModal: React.FC<TransferModalProps> = ({
                 <button
                   type="button"
                   onClick={handleNameEnquiry}
-                  disabled={recipientAccNo.length !== 10 || isPerformingEnquiry}
+                  disabled={recipientAccNo.length !== 10 || isPerformingEnquiry || enquiryRemaining === 0}
                   className="px-4 py-2 bg-slate-800 hover:bg-slate-700 disabled:opacity-50 text-slate-200 text-xs font-semibold rounded-xl flex items-center gap-1 shrink-0"
+                  title={`${enquiryRemaining} lookups remaining`}
                 >
                   <Search className="w-3.5 h-3.5" />
-                  {isPerformingEnquiry ? 'Verifying...' : 'Verify'}
+                  {isPerformingEnquiry ? 'Verifying...' : `Verify${enquiryRemaining < 5 ? ` (${enquiryRemaining})` : ''}`}
                 </button>
               </div>
             </div>

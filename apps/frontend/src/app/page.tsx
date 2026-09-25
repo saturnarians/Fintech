@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { api } from '../lib/api';
+import { createRateLimiter } from '../lib/rateLimiter';
 import { User, Account, Transaction } from '../types';
 import { Navbar } from '../components/Navbar';
 import { AccountCard } from '../components/AccountCard';
@@ -53,6 +54,12 @@ export default function Home() {
   const [errorMsg, setErrorMsg] = useState('');
   const [loading, setLoading] = useState(true);
   const [isSubmittingAuth, setIsSubmittingAuth] = useState(false);
+
+  /**
+   * LEARNING NOTE: RATE LIMITER — cap auth form to 3 submissions per 30 s.
+   * Deters brute-force login attempts at the UI layer before they hit the API.
+   */
+  const authLimiter = useRef(createRateLimiter(3, 30_000));
 
   // Restore session on load
   useEffect(() => {
@@ -106,6 +113,14 @@ export default function Home() {
   const handleAuthSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
+
+    // Rate-limit guard — 3 attempts per 30 s
+    if (!authLimiter.current.isAllowed()) {
+      const waitSec = Math.ceil(authLimiter.current.msUntilReset() / 1000);
+      setErrorMsg(`Too many attempts. Please wait ${waitSec}s.`);
+      return;
+    }
+
     setIsSubmittingAuth(true);
 
     try {
